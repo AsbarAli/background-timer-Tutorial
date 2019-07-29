@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
-import {View, Text, Button} from 'react-native';
+import {View, Text, Button, Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import type {Element as ReactElement} from 'react';
+import BackgroundTimer from "react-native-background-timer";
 
 import styles from './Timer.styles';
 
@@ -22,7 +23,12 @@ class TimerComponent extends React.PureComponent<TimerProps, TimerState> {
   _interval: any;
 
   onStart = () => {
-    this._interval = setInterval(() => {
+
+    if (Platform.OS =="ios") {
+      BackgroundTimer.start();
+    }
+
+    this._interval = BackgroundTimer.setInterval(() => {
       this.setState({
         second: this.state.second + 1,
       })
@@ -30,14 +36,14 @@ class TimerComponent extends React.PureComponent<TimerProps, TimerState> {
   }
 
   onPause = () => {
-    clearInterval(this._interval);
+    BackgroundTimer.clearInterval(this._interval);
   }
 
   onReset = () => {
     this.setState({
       second: 0,
     })
-    clearInterval(this._interval);
+    BackgroundTimer.clearInterval(this._interval);
   }
 
   renderStartButton = () => {
